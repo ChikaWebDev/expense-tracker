@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker | Miracle</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #080d18;
+    color: #fff;
+    min-height: 100vh;
+    padding: 25px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 28px;
+}
+
+header h1 span {
+    color: #4da3ff;
+}
+
+header p {
+    color: #8b9bb4;
+    margin-top: 5px;
+}
+
+.date {
+    color: #8b9bb4;
+    font-size: 13px;
+    text-align: right;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #101a2b;
+    border: 1px solid #1d2b40;
+    padding: 22px;
+    border-radius: 15px;
+}
+
+.card p {
+    color: #8b9bb4;
+    margin-bottom: 12px;
+}
+
+.card h2 {
+    font-size: 25px;
+    overflow-wrap: anywhere;
+}
+
+.balance h2 {
+    color: #4da3ff;
+}
+
+.income h2 {
+    color: #36d399;
+}
+
+.expense h2 {
+    color: #ff6b81;
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: #101a2b;
+    border: 1px solid #1d2b40;
+    border-radius: 15px;
+    padding: 22px;
+}
+
+.panel h3 {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    color: #a9b8ce;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+form input,
+form select,
+.search-box {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 17px;
+    background: #080d18;
+    border: 1px solid #263852;
+    color: white;
+    border-radius: 8px;
+    outline: none;
+}
+
+form input:focus,
+form select:focus {
+    border-color: #4da3ff;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+button:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+.add-btn {
+    width: 100%;
+    background: #4da3ff;
+    color: #080d18;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.controls select {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px;
+    background: #080d18;
+    color: white;
+    border: 1px solid #263852;
+    border-radius: 8px;
+}
+
+.controls input {
+    flex: 2;
+    min-width: 130px;
+    padding: 10px;
+    background: #080d18;
+    color: white;
+    border: 1px solid #263852;
+    border-radius: 8px;
+}
+
+.transaction {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 0;
+    border-bottom: 1px solid #263852;
+}
+
+.transaction:last-child {
+    border-bottom: none;
+}
+
+.transaction h4 {
+    margin-bottom: 5px;
+}
+
+.transaction small {
+    color: #8b9bb4;
+}
+
+.transaction-right {
+    text-align: right;
+}
+
+.amount {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.positive {
+    color: #36d399;
+}
+
+.negative {
+    color: #ff6b81;
+}
+
+.delete-btn {
+    background: #39202a;
+    color: #ff6b81;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.empty {
+    text-align: center;
+    color: #8b9bb4;
+    padding: 35px 10px;
+}
+
+.monthly {
+    margin-top: 20px;
+}
+
+.monthly h3 {
+    margin-bottom: 12px;
+}
+
+.monthly p {
+    color: #8b9bb4;
+    margin: 8px 0;
+}
+
+.monthly strong {
+    color: #4da3ff;
+}
+
+.clear-btn {
+    background: #39202a;
+    color: #ff6b81;
+    margin-top: 15px;
+}
+
+footer {
+    text-align: center;
+    color: #65758d;
+    margin-top: 35px;
+    font-size: 13px;
+}
+
+@media(max-width: 750px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        align-items: flex-start;
+    }
+
+    .date {
+        text-align: left;
+    }
+}
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div>
+        <h1>Expense<span>Tracker</span></h1>
+        <p>Manage your money smarter.</p>
+    </div>
+
+    <div class="header-actions">
+        <div class="date" id="currentDate"></div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" aria-pressed="false" title="Switch theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+            </svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"></path>
+            </svg>
+        </button>
+    </div>
+</header>
+
+<section class="cards">
+
+    <div class="card balance">
+        <p>Total Balance</p>
+        <h2 id="balance">₦0.00</h2>
+    </div>
+
+    <div class="card income">
+        <p>Total Income</p>
+        <h2 id="income">₦0.00</h2>
+    </div>
+
+    <div class="card expense">
+        <p>Total Expenses</p>
+        <h2 id="expenses">₦0.00</h2>
+    </div>
+
+</section>
+
+<div class="main-grid">
+
+    <section class="panel">
+        <h3>Add Transaction</h3>
+
+        <form id="transactionForm">
+
+            <label for="description">Description</label>
+            <input
+                type="text"
+                id="description"
+                placeholder="e.g. Salary, Food, Transport"
+                required
+            >
+
+            <label for="amount">Amount (₦)</label>
+            <input
+                type="number"
+                id="amount"
+                placeholder="Enter amount"
+                min="0.01"
+                step="0.01"
+                required
+            >
+
+            <label for="type">Transaction Type</label>
+            <select id="type" required>
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+            </select>
+
+            <label for="category">Category</label>
+            <select id="category" required>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Bills">Bills</option>
+                <option value="Education">Education</option>
+                <option value="Health">Health</option>
+                <option value="Salary">Salary</option>
+                <option value="Business">Business</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="transactionDate">Date</label>
+            <input
+                type="date"
+                id="transactionDate"
+                required
+            >
+
+            <button class="add-btn" type="submit">
+                + Add Transaction
+            </button>
+
+        </form>
+    </section>
+
+    <section class="panel">
+
+        <h3>Transaction History</h3>
+
+        <div class="controls">
+
+            <input
+                type="search"
+                id="search"
+                placeholder="Search transactions..."
+            >
+
+            <select id="filter">
+                <option value="all">All</option>
+                <option value="income">Income</option>
+                <option value="expense">Expenses</option>
+            </select>
+
+        </div>
+
+        <div id="transactionList"></div>
+
+        <div class="monthly">
+            <h3>This Month</h3>
+            <p>Income: <strong id="monthlyIncome">₦0.00</strong></p>
+            <p>Expenses: <strong id="monthlyExpense">₦0.00</strong></p>
+        </div>
+
+        <button class="clear-btn" id="clearAll">
+            Clear All Transactions
+        </button>
+
+    </section>
+
+</div>
+
+<footer>
+    Built by Miracle Chika Obi | Expense Tracker
+</footer>
+
+</div>
+
+<script>
+if (false) {
+
+// GET HTML ELEMENTS
+
+const form = document.getElementById("transactionForm");
+const descriptionInput = document.getElementById("description");
+const amountInput = document.getElementById("amount");
+const typeInput = document.getElementById("type");
+const categoryInput = document.getElementById("category");
+const dateInput = document.getElementById("transactionDate");
+
+const transactionList = document.getElementById("transactionList");
+const searchInput = document.getElementById("search");
+const filterInput = document.getElementById("filter");
+
+
+// CURRENCY FORMAT
+
+function formatMoney(amount) {
+    return new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN"
+    }).format(amount);
+}
+
+
+// LOAD SAVED TRANSACTIONS
+
+let transactions = [];
+
+try {
+    const savedData = JSON.parse(
+        localStorage.getItem("expenseTrackerData") || "[]"
+    );
+
+    transactions = Array.isArray(savedData)
+        ? savedData.filter(item =>
+            item &&
+            typeof item.id === "number" &&
+            typeof item.amount === "number" &&
+            Number.isFinite(item.amount) &&
+            item.amount > 0 &&
+            ["income", "expense"].includes(item.type) &&
+            typeof item.description === "string"
+        )
+        : [];
+
+} catch (error) {
+    transactions = [];
+}
+
+
+// SAVE DATA
+
+function saveTransactions() {
+    localStorage.setItem(
+        "expenseTrackerData",
+        JSON.stringify(transactions)
+    );
+}
+
+
+// SET DEFAULT DATE
+
+dateInput.value = new Date().toLocaleDateString("en-CA");
+
+
+// SHOW CURRENT DATE
+
+function showDate() {
+    const today = new Date();
+
+    document.getElementById("currentDate").textContent =
+        today.toLocaleDateString("en-NG", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+}
+
+showDate();
+
+
+// ADD TRANSACTION
+
+form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const description = descriptionInput.value.trim();
+    const amount = Number(amountInput.value);
+    const type = typeInput.value;
+    const category = categoryInput.value;
+    const date = dateInput.value;
+
+    if (!description || !Number.isFinite(amount) || amount <= 0 || !date) {
+        alert("Please enter valid transaction details.");
+        return;
+    }
+
+    const transaction = {
+        id: Date.now(),
+        description: description,
+        amount: amount,
+        type: type,
+        category: category,
+        date: date
+    };
+
+    transactions.unshift(transaction);
+
+    saveTransactions();
+
+    form.reset();
+
+    dateInput.value = new Date().toLocaleDateString("en-CA");
+
+    renderApp();
+
+    alert("Transaction added successfully!");
+
+});
+
+
+// DELETE TRANSACTION
+
+function deleteTransaction(id) {
+
+    const confirmDelete = confirm(
+        "Are you sure you want to delete this transaction?"
+    );
+
+    if (!confirmDelete) return;
+
+    transactions = transactions.filter(
+        transaction => transaction.id !== id
+    );
+
+    saveTransactions();
+
+    renderApp();
+}
+
+
+// DISPLAY TRANSACTIONS
+
+function displayTransactions() {
+
+    const search = searchInput.value.toLowerCase();
+    const filter = filterInput.value;
+
+    const filteredTransactions = transactions.filter(transaction => {
+
+        const matchesSearch =
+            transaction.description.toLowerCase().includes(search) ||
+            transaction.category.toLowerCase().includes(search);
+
+        const matchesFilter =
+            filter === "all" || transaction.type === filter;
+
+        return matchesSearch && matchesFilter;
+
+    });
+
+    transactionList.innerHTML = "";
+
+    if (filteredTransactions.length === 0) {
+
+        transactionList.innerHTML = `
+            <div class="empty">
+                No transactions found.
+            </div>
+        `;
+
+        return;
+    }
+
+    filteredTransactions.forEach(transaction => {
+
+        const item = document.createElement("div");
+
+        item.className = "transaction";
+
+        const left = document.createElement("div");
+
+        const heading = document.createElement("h4");
+        heading.textContent = transaction.description;
+
+        const details = document.createElement("small");
+        details.textContent =
+            transaction.category + " • " + transaction.date;
+
+        left.append(heading, details);
+
+        const right = document.createElement("div");
+        right.className = "transaction-right";
+
+        const amount = document.createElement("div");
+
+        amount.className =
+            "amount " +
+            (transaction.type === "income" ? "positive" : "negative");
+
+        amount.textContent =
+            (transaction.type === "income" ? "+" : "-") +
+            formatMoney(transaction.amount);
+
+        const deleteButton = document.createElement("button");
+
+        deleteButton.className = "delete-btn";
+        deleteButton.textContent = "Delete";
+
+        deleteButton.addEventListener("click", function() {
+            deleteTransaction(transaction.id);
+        });
+
+        right.append(amount, deleteButton);
+
+        item.append(left, right);
+
+        transactionList.appendChild(item);
+
+    });
+
+}
+
+
+// UPDATE DASHBOARD
+
+function updateDashboard() {
+
+    let totalIncome = 0;
+    let totalExpenses = 0;
+
+    let monthlyIncome = 0;
+    let monthlyExpenses = 0;
+
+    const today = new Date();
+
+    const currentMonth =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0");
+
+    transactions.forEach(transaction => {
+
+        const transactionMonth = transaction.date.slice(0, 7);
+
+        if (transaction.type === "income") {
+
+            totalIncome += transaction.amount;
+
+            if (transactionMonth === currentMonth) {
+                monthlyIncome += transaction.amount;
+            }
+
+        } else {
+
+            totalExpenses += transaction.amount;
+
+            if (transactionMonth === currentMonth) {
+                monthlyExpenses += transaction.amount;
+            }
+
+        }
+
+    });
+
+    const balance = totalIncome - totalExpenses;
+
+    document.getElementById("balance").textContent =
+        formatMoney(balance);
+
+    document.getElementById("income").textContent =
+        formatMoney(totalIncome);
+
+    document.getElementById("expenses").textContent =
+        formatMoney(totalExpenses);
+
+    document.getElementById("monthlyIncome").textContent =
+        formatMoney(monthlyIncome);
+
+    document.getElementById("monthlyExpense").textContent =
+        formatMoney(monthlyExpenses);
+
+}
+
+
+// SEARCH TRANSACTIONS
+
+searchInput.addEventListener("input", displayTransactions);
+
+
+// FILTER TRANSACTIONS
+
+filterInput.addEventListener("change", displayTransactions);
+
+
+// CLEAR ALL TRANSACTIONS
+
+document.getElementById("clearAll").addEventListener("click", function() {
+
+    if (transactions.length === 0) {
+        alert("There are no transactions to clear.");
+        return;
+    }
+
+    const confirmClear = confirm(
+        "Are you sure you want to delete ALL transactions?"
+    );
+
+    if (!confirmClear) return;
+
+    transactions = [];
+
+    saveTransactions();
+
+    renderApp();
+
+    alert("All transactions have been cleared.");
+
+});
+
+
+// REFRESH THE APP
+
+function renderApp() {
+
+    updateDashboard();
+
+    displayTransactions();
+
+}
+
+
+// START APPLICATION
+
+renderApp();
+
+}
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
