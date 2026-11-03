@@ -323,6 +323,51 @@ footer {
 
 </section>
 
+<section class="insights-grid" aria-label="Financial insights">
+    <section class="panel insight-panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Income vs Expenses</h3>
+                <p class="panel-subtitle">Monthly totals for the last six months</p>
+            </div>
+            <div class="chart-legend" aria-label="Chart legend">
+                <span><i class="legend-dot income-dot"></i>Income</span>
+                <span><i class="legend-dot expense-dot"></i>Expenses</span>
+            </div>
+        </div>
+        <div id="monthlyChart" class="monthly-chart" role="img" aria-label="Monthly income and expense comparison"></div>
+    </section>
+
+    <section class="panel insight-panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Spending by Category</h3>
+                <p class="panel-subtitle">Expense breakdown for the selected month</p>
+            </div>
+            <label class="month-picker-label" for="insightsMonth">Month</label>
+            <input id="insightsMonth" class="month-picker" type="month" aria-label="Select report month">
+        </div>
+        <div id="categoryBreakdown" class="category-breakdown"></div>
+    </section>
+
+    <section class="panel insight-panel report-panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Monthly Reports</h3>
+                <p class="panel-subtitle">Income, expenses, and net balance by month</p>
+            </div>
+        </div>
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th></tr>
+                </thead>
+                <tbody id="monthlyReportBody"></tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
 <div class="main-grid">
 
     <section class="panel">
@@ -335,6 +380,9 @@ footer {
                 type="text"
                 id="description"
                 placeholder="e.g. Salary, Food, Transport"
+                minlength="2"
+                maxlength="80"
+                autocomplete="off"
                 required
             >
 
@@ -344,6 +392,7 @@ footer {
                 id="amount"
                 placeholder="Enter amount"
                 min="0.01"
+                max="999999999999.99"
                 step="0.01"
                 required
             >
@@ -371,6 +420,7 @@ footer {
             <input
                 type="date"
                 id="transactionDate"
+                max=""
                 required
             >
 
@@ -398,6 +448,11 @@ footer {
                 <option value="income">Income</option>
                 <option value="expense">Expenses</option>
             </select>
+
+            <button class="export-btn" id="exportCsv" type="button" title="Download transactions as CSV">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"></path></svg>
+                Export CSV
+            </button>
 
         </div>
 
